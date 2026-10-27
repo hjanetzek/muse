@@ -1,0 +1,59 @@
+#!/bin/sh
+# Builds the MAME library and the plugins.
+#
+#   ./build.sh            build
+#   ./build.sh install    build, then install the plugins to ~/.clap and ~/.vst3
+#
+# JOBS sets the number of parallel jobs, BUILD_TYPE the CMake build type (Release)
+
+set -e
+
+ROOT=$(cd "$(dirname "$0")" && pwd)
+JOBS=${JOBS:-$(nproc)}
+BUILD_TYPE=${BUILD_TYPE:-Release}
+BUILD="$ROOT/build"
+PRODUCTS="MAME-TX81Z MAME-EX20"
+TARGETS="tx81zJucePlugin ex20JucePlugin"
+FORMATS="CLAP VST3"
+
+# libmame_synths.so: MAME with the machines listed in synths.flt and the plugin OSD
+make -C "$ROOT/mame" OSD=plugin BUILDDIR=build/plugin SUBTARGET=synths SOURCEFILTER=src/mame/synths.flt -j"$JOBS"
+
+cmake -S "$ROOT/gearmulator" -B "$BUILD/gearmulator" -G Ninja \
+	-DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
+	-Dgearmulator_SYNTH_MAME=ON \
+	-Dgearmulator_SYNTH_OSIRUS=OFF -Dgearmulator_SYNTH_OSTIRUS=OFF \
+	-Dgearmulator_SYNTH_VAVRA=OFF -Dgearmulator_SYNTH_XENIA=OFF \
+	-Dgearmulator_SYNTH_88EMU=OFF -Dgearmulator_SYNTH_JE8086=OFF \
+	-Dgearmulator_SYNTH_NODALRED2X=OFF \
+	-Dgearmulator_BUILD_FX_PLUGIN=OFF \
+	-DMAME_PLUGIN_LIBRARY="$ROOT/mame/libmame_synths.so" \
+	-DMAME_PLUGIN_INCLUDE_DIR="$ROOT/mame/src/osd/plugin"
+
+targets=
+for t in $TARGETS; do
+	for f in $FORMATS; do
+		targets="$targets ${t}_$f"
+	done
+done
+cmake --build "$BUILD/gearmulator" -j"$JOBS" --target $targets
+
+# the plugins are in gearmulator/bin/plugins/$BUILD_TYPE
+[ "$1" = "install" ] || exit 0
+
+STAGE="$BUILD/install"
+rm -rf "$STAGE"
+for p in $PRODUCTS; do
+	for f in $FORMATS; do
+		cmake --install "$BUILD/gearmulator" --prefix "$STAGE" --component "$p-$f"
+	done
+done
+
+# the CLAP plugins share one copy of the library, each VST3 bundle has its own
+mkdir -p "$HOME/.clap" "$HOME/.vst3"
+cp --remove-destination "$STAGE"/lib/clap/* "$HOME/.clap/"
+for b in "$STAGE"/lib/vst3/*.vst3; do
+	rm -rf "$HOME/.vst3/$(basename "$b")"
+	cp -r "$b" "$HOME/.vst3/"
+done
+echo "installed to $HOME/.clap and $HOME/.vst3"

@@ -1,0 +1,9 @@
+[submodule "mame"]
+	path = mame
+	url = https://github.com/hjanetzek/mame.git
+	branch = muse-plugin
+	shallow = true
+[submodule "gearmulator"]
+	path = gearmulator
+	url = https://github.com/hjanetzek/gearmulator.git
+	branch = mame
