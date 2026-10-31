@@ -96,12 +96,14 @@ Tested with the TX81Z and the panels CTX81Z 3.2.1 and Yamaha - TX81Z - Lime:
 
 - The panels load, CTX81Z runs its Lua scripts.
 - The panels control the machine. The TX81Z only takes SysEx with "SYS INFO AVAIL" in its Utility settings, and it listens on its basic receive channel: CTX81Z sends on channel 1, Lime on channel 3 (the panel's MIDI channel).
-- CtrlrX opens no MIDI devices and has no MIDI menu (`CTRLR_EMBEDDED`), the panels always use the plugin's MIDI.
+- CtrlrX opens no MIDI devices (`CTRLR_EMBEDDED`), the panels always use the plugin's MIDI.
+- The CtrlrX window shows only the panel, without menus, tabs and the panel editor, at the size of the panel's canvas.
+- CTX81Z shows the machine's current voice, so the machine's SysEx reaches the panel.
 - The plugin's state keeps the panel and its values, and restoring a state twice leaves one panel. A panel restored with the state no longer crashes before the CtrlrX window was opened.
 
 Open:
 
 - Bank receive and send were not checked yet.
-- The CtrlrX editor runs in its normal mode, with its menus and the panel editor. A mode that only shows the panel ("restricted" instances) would suit the plugins better.
+- With the menus gone, other panels can't be opened from the CtrlrX window: the plugin only opens the first panel of the machine's folder. A choice of panels in the plugin's menu would help.
 - CtrlrX keeps settings and a log of its own, these have not been looked at yet.
 - Several plugin instances in one process share CtrlrX's static log pointer (`CtrlrLog::ctrlrLog`).

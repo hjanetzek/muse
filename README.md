@@ -4,7 +4,7 @@ Hardware synthesizers emulated by [MAME](https://www.mamedev.org), played as CLA
 
 The plugins take MIDI from the host and return the machine's audio. The machine's front panel is shown the way MAME draws it from its layout, and it can be used with the mouse. The machine's NVRAM (its patch memory) is saved with the host project.
 
-Editor and librarian panels made for [CtrlrX](https://github.com/damiensellier/CtrlrX) run inside the plugins: "CtrlrX Panel..." in the plugin's menu (right click) opens them, the panel's MIDI goes to the machine and the machine's MIDI back to the panel. See [docs/ctrlrx.md](docs/ctrlrx.md).
+Editor and librarian panels made for [CtrlrX](https://github.com/damiensellier/CtrlrX) run inside the plugins: "CtrlrX Panel..." in the plugin's menu (right click) opens the panel in a window of its own, the panel's MIDI goes to the machine and the machine's MIDI back to the panel. See [docs/ctrlrx.md](docs/ctrlrx.md).
 
 The plugin side is built on [gearmulator](https://github.com/dsp56300/gearmulator), which provides the JUCE plugin, the GUI framework and the MIDI handling.
 
@@ -59,7 +59,7 @@ Everything a machine needs besides the plugin is in a folder of its own, `~/.loc
 |---|---|
 | `roms/` | The machine's ROMs, as MAME expects them: `<machine>.zip` or a folder `<machine>/` with the ROM files, e.g. `tx81z/roms/tx81z/tx81z-v1.6.ic15`. Not included. |
 | `nvram/<machine>/` | The machine's starting NVRAM (its patch memory), optional. Some machines start with empty patch memory and stay silent until patches are loaded. A new plugin instance starts from these files and afterwards keeps its own copy in the host project. |
-| `panels/` | CtrlrX panels (`.bpanelz`, `.panel`, ...), optional. The first one is opened when a plugin instance shows its panels for the first time, others can be opened from the CtrlrX menu. [docs/ctrlrx.md](docs/ctrlrx.md) lists panels for the machines. None are included. |
+| `panels/` | CtrlrX panels (`.bpanelz`, `.panel`, ...), optional. The first one is opened when a plugin instance shows its panel for the first time. [docs/ctrlrx.md](docs/ctrlrx.md) lists panels for the machines. None are included. |
 | `cfg/` | Written by MAME, its settings for the machine. |
 
 `~/.config/mame-plugin/mame-plugin.ini` can set further ROM folders, searched after the machine's own, and another data folder:
