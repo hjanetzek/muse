@@ -92,11 +92,12 @@ The plugins link the system's `libluajit-5.1.so.2` and `libusb-1.0.so.0`.
 
 ### Status
 
-Tested with the TX81Z Standalone and CTX81Z 3.2.1:
+Tested with the TX81Z and the panels CTX81Z 3.2.1 and Yamaha - TX81Z - Lime:
 
-- The panel loads and runs its Lua scripts.
-- The panel's SysEx reaches the machine: the TX81Z switched to utility mode as the panel asked it to.
-- The plugin's state keeps the panel and its values, and restoring a state twice leaves one panel.
+- The panels load, CTX81Z runs its Lua scripts.
+- The panels control the machine. The TX81Z only takes SysEx with "SYS INFO AVAIL" in its Utility settings, and it listens on its basic receive channel: CTX81Z sends on channel 1, Lime on channel 3 (the panel's MIDI channel).
+- CtrlrX opens no MIDI devices and has no MIDI menu (`CTRLR_EMBEDDED`), the panels always use the plugin's MIDI.
+- The plugin's state keeps the panel and its values, and restoring a state twice leaves one panel. A panel restored with the state no longer crashes before the CtrlrX window was opened.
 
 Open:
 
