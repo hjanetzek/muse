@@ -1,1 +1,3 @@
 build/
+# panel collections for testing, see docs/ctrlrx.md
+panels/

@@ -38,17 +38,39 @@ cd muse
 
 `./build.sh install` copies the plugins to `~/.clap` and `~/.vst3`. The MAME library is installed next to the plugins, which find it there.
 
-The first build of MAME takes a while. `JOBS=n` sets the number of parallel jobs.
+The first build of MAME takes a while. `JOBS=n` sets the number of parallel jobs. `FORMATS` sets the plugin formats to build, `CLAP VST3` by default.
 
-## ROMs
+## Running the stand-alone application
 
-No ROMs are included. The plugins look for them in `~/.local/share/mame-plugin/roms/<machine>/`, in the layout MAME uses. Another path can be set as `rompath=` in `~/.config/mame-plugin/mame-plugin.ini`, or with the `MAME_PLUGIN_ROMPATH` environment variable.
+Each machine can also run as a stand-alone application, without a host:
 
-Some machines start with empty patch memory and stay silent until patches are loaded. A machine's starting NVRAM can be put into `~/.local/share/mame-plugin/<machine>/nvram/<machine>/`. A plugin instance then starts from it, and afterwards keeps its own copy in the host project.
+```sh
+FORMATS="CLAP VST3 Standalone" ./build.sh
+./gearmulator/bin/plugins/Release/Standalone/MAME-TX81Z
+```
 
-## Panels
+The applications are in `gearmulator/bin/plugins/Release/Standalone`, next to the MAME library they load. "Options" in the window's title bar chooses the audio device and the MIDI inputs, and saves or loads the state to a file. The application keeps the state of the machine, its devices and the CtrlrX panels in `~/.config/MAME-<machine>.settings` and starts from it the next time; "Reset to default state" starts the machine afresh. A right click on the machine's panel opens the plugin's menu with "Settings..." (more MIDI ports, for example) and "CtrlrX Panel...".
 
-No panels are included either. The first panel file (`.bpanelz`, `.panel`, ...) in `~/.local/share/mame-plugin/<machine>/panels/` is opened when a plugin instance shows its panels for the first time, others can be opened from the CtrlrX menu. [docs/ctrlrx.md](docs/ctrlrx.md) lists panels for the machines.
+## Data folder
+
+Everything a machine needs besides the plugin is in a folder of its own, `~/.local/share/mame-plugin/<machine>/`:
+
+| Folder | Contents |
+|---|---|
+| `roms/` | The machine's ROMs, as MAME expects them: `<machine>.zip` or a folder `<machine>/` with the ROM files, e.g. `tx81z/roms/tx81z/tx81z-v1.6.ic15`. Not included. |
+| `nvram/<machine>/` | The machine's starting NVRAM (its patch memory), optional. Some machines start with empty patch memory and stay silent until patches are loaded. A new plugin instance starts from these files and afterwards keeps its own copy in the host project. |
+| `panels/` | CtrlrX panels (`.bpanelz`, `.panel`, ...), optional. The first one is opened when a plugin instance shows its panels for the first time, others can be opened from the CtrlrX menu. [docs/ctrlrx.md](docs/ctrlrx.md) lists panels for the machines. None are included. |
+| `cfg/` | Written by MAME, its settings for the machine. |
+
+`~/.config/mame-plugin/mame-plugin.ini` can set further ROM folders, searched after the machine's own, and another data folder:
+
+```ini
+# ;-separated, each holding <machine>.zip or <machine>/ like a MAME ROM folder
+rompath = /home/me/mame/roms
+datapath = /home/me/mame-plugin
+```
+
+The environment variables `MAME_PLUGIN_ROMPATH` and `MAME_PLUGIN_DATAPATH` override both.
 
 ## Licence
 
