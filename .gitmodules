@@ -5,10 +5,10 @@
 	shallow = true
 [submodule "gearmulator"]
 	path = gearmulator
-	url = https://github.com/hjanetzek/gearmulator.git
+	url = https://github.com/hjanetzek/muse-gearmulator.git
 	branch = mame
 [submodule "CtrlrX"]
 	path = CtrlrX
-	url = https://github.com/hjanetzek/CtrlrX.git
+	url = https://github.com/hjanetzek/muse-ctrlrx.git
 	branch = muse
 	shallow = true

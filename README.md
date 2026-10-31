@@ -22,8 +22,8 @@ The MAME library also contains the FB-01, DX100, MU50, ESQ-1/ESQ-M/SQ-80 and Pol
 | Path | Contents |
 |---|---|
 | `mame/` | MAME fork, branch `muse-plugin`. `src/osd/plugin` is the plugin OSD and the C API (`mame_plugin.h`) of `libmame_synths.so`. `src/mame/synths.flt` lists the drivers that go into the library. |
-| `CtrlrX/` | CtrlrX fork, branch `muse`, without what muse doesn't use. `muse/` has the build of the library the plugins link and the script that merges upstream. |
-| `gearmulator/` | gearmulator fork, branch `mame`. `source/mame/mameLib` runs a machine through the C API, `source/mame/mameJucePlugin` is the plugin shared by all machines, and each `source/mame/<machine>JucePlugin` folder is one plugin product. |
+| `CtrlrX/` | [muse-ctrlrx](https://github.com/hjanetzek/muse-ctrlrx), branch `muse`: CtrlrX without what muse doesn't use, synced with upstream. `muse/` has the build of the library the plugins link and the script that merges upstream. |
+| `gearmulator/` | [muse-gearmulator](https://github.com/hjanetzek/muse-gearmulator), the gearmulator fork, branch `mame`. `source/mame/mameLib` runs a machine through the C API, `source/mame/mameJucePlugin` is the plugin shared by all machines, and each `source/mame/<machine>JucePlugin` folder is one plugin product. |
 | `docs/` | Notes on the MAME instruments. |
 
 ## Building

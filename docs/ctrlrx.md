@@ -53,21 +53,28 @@ Licences of the collections: dnaldoog's panels are BSD-3-Clause, the Sequential/
 
 ### Fork
 
-`CtrlrX/` is the fork [hjanetzek/CtrlrX](https://github.com/hjanetzek/CtrlrX), branch `muse`. It keeps upstream's history, so changes can go back upstream as pull requests. On top of upstream:
+`CtrlrX/` is [hjanetzek/muse-ctrlrx](https://github.com/hjanetzek/muse-ctrlrx), branch `muse`. Its history starts with the tree of CtrlrX 5.6.36 and doesn't contain upstream's history, which has more than 350 MB of bundled libraries and build products. `muse/upstream-commit` names the upstream commit the branch is synced to. The commits:
 
-1. `muse: remove what the muse plugins don't use`, the paths listed in `muse/removed-paths`:
+1. `CtrlrX 5.6.36 for muse`: upstream's tree without the paths listed in `muse/removed-paths`:
    - `JUCE/`, `JuceLibraryCode/`: the plugins use gearmulator's JUCE.
    - `Source/Misc/boost`, `libusb`, `luajit`, `lua`, `cmake/luajit`: the system's packages are used.
    - `Packaging/`, `Doc/`, `Tests/`, `.github/`, the `.jucer` projects, the build scripts and the panel submodules.
 2. `muse: LF line endings`: upstream mixes CRLF, LF and both in one file. The fork has `* text=auto eol=lf` in `.gitattributes`.
-3. Changes that could go upstream, they keep the build with JUCE 6 working:
+3. `muse/sync-upstream.sh: sync without upstream's history`, see below.
+4. Changes that could go upstream, they keep the build with JUCE 6 working:
    - `Build with JUCE 7 and C++17`: luabind and noexcept functions and scoped enums, `File` and `Font` being final, thread priorities, changed signatures and new overloads, Ogg and FLAC being optional.
    - `Panels without a MIDI output device send to the host again`: fixes a bug of 5.6.36.
-4. `muse/CMakeLists.txt` builds the static library `ctrlrLib` against the JUCE of the project that adds it. `CTRLR_EMBEDDED` leaves out the plugin entry point, `muse/include/JuceHeader.h` replaces the Projucer's, and the resources are built as `CtrlrBinaryData` so they don't clash with the plugin's `BinaryData`.
+5. `muse/CMakeLists.txt` builds the static library `ctrlrLib` against the JUCE of the project that adds it. `CTRLR_EMBEDDED` leaves out the plugin entry point, `muse/include/JuceHeader.h` replaces the Projucer's, and the resources are built as `CtrlrBinaryData` so they don't clash with the plugin's `BinaryData`.
 
-`muse/sync-upstream.sh` merges upstream (`git merge -X renormalize`, for the line endings) and removes the paths of `muse/removed-paths` again, including files upstream adds there. Only conflicts in the files muse keeps are left to resolve by hand. Tested by merging 30 upstream commits into the branch rebuilt on an older upstream commit: the result was identical to the branch.
+`muse/sync-upstream.sh [ref]` fetches upstream and merges it:
 
-The remote `upstream` is damiensellier/CtrlrX, `me` is the fork.
+- For the merge, the upstream commit of `muse/upstream-commit` becomes a second parent of `HEAD` through a temporary graft (`git replace --graft`), so git finds the right merge base. The merge is squashed, so no upstream commit becomes part of the branch, and the graft is removed again.
+- `-X renormalize` merges upstream's CRLF into the LF files.
+- The paths of `muse/removed-paths` are removed again, including files upstream adds there. Only conflicts in the files muse keeps are left to resolve by hand, then `muse/sync-upstream.sh --continue` commits the merge.
+
+Tested with a branch made like this one from an upstream commit 30 commits older than 5.6.36: synced to 5.6.36, its tree equalled the one of the `muse` branch.
+
+The remote `upstream` is damiensellier/CtrlrX, `me` is muse-ctrlrx. Changes for upstream have to be ported onto upstream's history for a pull request.
 
 ### Integration
 
