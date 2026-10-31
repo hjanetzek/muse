@@ -28,7 +28,8 @@ cmake -S "$ROOT/gearmulator" -B "$BUILD/gearmulator" -G Ninja \
 	-Dgearmulator_SYNTH_NODALRED2X=OFF \
 	-Dgearmulator_BUILD_FX_PLUGIN=OFF \
 	-DMAME_PLUGIN_LIBRARY="$ROOT/mame/libmame_synths.so" \
-	-DMAME_PLUGIN_INCLUDE_DIR="$ROOT/mame/src/osd/plugin"
+	-DMAME_PLUGIN_INCLUDE_DIR="$ROOT/mame/src/osd/plugin" \
+	-DMAME_CTRLR_DIR="$ROOT/CtrlrX"
 
 targets=
 for t in $TARGETS; do

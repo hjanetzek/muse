@@ -7,3 +7,8 @@
 	path = gearmulator
 	url = https://github.com/hjanetzek/gearmulator.git
 	branch = mame
+[submodule "CtrlrX"]
+	path = CtrlrX
+	url = https://github.com/hjanetzek/CtrlrX.git
+	branch = muse
+	shallow = true
