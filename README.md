@@ -66,10 +66,13 @@ Everything a machine needs besides the plugin is in a folder of its own, `~/.loc
 | Folder | Contents |
 |---|---|
 | `roms/` | The machine's ROMs, as MAME expects them: `<machine>.zip` or a folder `<machine>/` with the ROM files, e.g. `tx81z/roms/tx81z/tx81z-v1.6.ic15`. Not included. |
+| `../roms/` | ROMs shared by all machines, `~/.local/share/mame-plugin/roms`: searched after the machine's own, the easiest place for everything, including parent sets and devices' ROMs (the SD-1 21-voice needs `sd1.zip`, `sd132.zip` and the display's `esq2x40_vfx.7z`). |
 | `nvram/<machine>/` | The machine's starting NVRAM (its patch memory), optional. Some machines start with empty patch memory and stay silent until patches are loaded. A new plugin instance starts from these files and afterwards keeps its own copy in the host project. |
 | `panels/` | CtrlrX panels (`.bpanelz`, `.panel`, ...), optional. The first one is opened when a plugin instance shows its panel for the first time. [docs/ctrlrx.md](docs/ctrlrx.md) lists panels for the machines. None are included. |
 | `cfg/` | Written by MAME, its settings for the machine. |
 | `default.lay` | A MAME layout file, optional. Shown instead of the layout compiled into the library, see [Layout development](#layout-development). |
+
+`./install-roms.sh <file or URL>...` puts ROM sets (`.zip` or `.7z`, named as MAME names the set) into the shared folder, downloading URLs first and checking each archive. A machine whose ROMs are missing doesn't start; the plugin then opens its own ROM folder, which is searched as well.
 
 `~/.config/mame-plugin/mame-plugin.ini` can set further ROM folders, searched after the machine's own, and another data folder:
 
