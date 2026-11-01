@@ -68,6 +68,26 @@ The existing `mp_panel_*` calls stay as a fallback, for layouts the loader can't
 
 In a later step, knobs and sliders become gearmulator parameters, generated from the layout's adjuster and analog fields. That brings automation, MIDI learn and the shared knob styling. Their values are then saved with the plugin state, which fixes the TODO item about LinnDrum settings in `cfg/`.
 
+## Status
+
+Milestone 1 is done (MAME API 8): `mp_layout_describe`, `mp_layout_states`, `mp_layout_element_image` and `mp_layout_screen`, with `layout_element::draw_state()` added to `rendlay`. `MPCTEST_LAYOUT=1` composes frames from them in plain C next to MAME's own:
+
+| Machine | Panel | Pixels that differ |
+|---|---|---|
+| LinnDrum (with a slider dragged) | 912 x 480 | 0 |
+| EX-20 | 1301 x 480 | 0 |
+| TX81Z | 735 x 68 | about 100, all in the LCD |
+
+Things learned on the way, which the GUI side has to follow:
+
+- The panel target stretches the view to the size it's given. A GUI should size its canvas from the view's aspect (`mp_layout_info::aspect`).
+- Element items are drawn at their bounds rounded to whole pixels, and their images at exactly that size, so they need no scaling.
+- Screens have no blend mode of their own in a layout (MAME's -1); their quads replace what's below, so the library reports `MP_LAYOUT_BLEND_NONE`. Their image is the last completed frame (`screen_device::curbitmap()`), not the bitmap being drawn.
+- MAME's software renderer doesn't filter screens, and ignores an image's alpha for `none` and `multiply`. The remaining TX81Z difference is where MAME's fixed-point stepping repeats a different LCD row when scaling 21 rows to 24.4 pixels. The GUI scales screens on the GPU anyway.
+- Item states are captured on the emulation thread (the items' bindings read outputs and inputs), element images are drawn on the GUI thread under the panel's drawing lock, so the emulation never builds a frame meanwhile.
+
+Not in milestone 1 yet: input (`mp_layout_input`, `mp_layout_field`), the views and collections to choose from, and scrolled items (flagged `MP_LAYOUT_SCROLLED`, none in our machines).
+
 ## Milestones
 
 1. **API and check tool.** `mp_layout_describe`, `mp_layout_element_image`, `mp_layout_states` and `mp_layout_screen` in the library. mpctest composes a frame from them in plain C and compares it with MAME's own rendering. The difference should be small, which validates the description before any GUI work.
