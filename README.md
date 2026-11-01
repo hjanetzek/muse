@@ -89,7 +89,7 @@ nativelayout = 1
 uiscale = 150
 ```
 
-The environment variables `MAME_PLUGIN_ROMPATH`, `MAME_PLUGIN_DATAPATH`, `MAME_PLUGIN_LAYOUTDEV`, `MAME_PLUGIN_NATIVELAYOUT` and `MAME_PLUGIN_UISCALE` override them. Resizing a plugin window gives more or less room around the panel; its size, and that of its text, only follows the UI scale. With `nativelayout`, the panel is drawn from the layout's description, see [docs/layout-loader.md](docs/layout-loader.md).
+The environment variables `MAME_PLUGIN_ROMPATH`, `MAME_PLUGIN_DATAPATH`, `MAME_PLUGIN_LAYOUTDEV`, `MAME_PLUGIN_NATIVELAYOUT` and `MAME_PLUGIN_UISCALE` override them. A plugin window can't be resized: its size, and that of its text, follows the UI scale only. With `nativelayout`, the panel is drawn from the layout's description, see [docs/layout-loader.md](docs/layout-loader.md).
 
 ## Layout development
 
