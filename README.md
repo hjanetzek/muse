@@ -15,6 +15,7 @@ The plugin side is built on [gearmulator](https://github.com/dsp56300/gearmulato
 | MAME-TX81Z | Yamaha TX81Z FM Tone Generator | `tx81z` |
 | MAME-EX20 | Wersi EX-20 Digital Organ | `ex20` |
 | MAME-LinnDrum | Linn Electronics LinnDrum | `linndrum` |
+| MAME-SD1 | Ensoniq SD-1 (32 voice) | `sd132` |
 
 The MAME library also contains the FB-01, DX100, MU50, ESQ-1/ESQ-M/SQ-80 and Poly-800 drivers, which don't have a plugin yet.
 

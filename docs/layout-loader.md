@@ -127,3 +127,6 @@ Milestone 4 is done (API 9): the machine's adjusters are the plugin's parameters
 ## Not covered
 
 The LinnDrum's CPU load (about 40 % of a core) comes from its analog audio emulation, not from the panel, and this plan doesn't change it.
+
+Milestone 5 is under way. The library has the Ensoniq VFX family (`ensoniq/esq5505.cpp`: `vfx`, `vfxsd`, `sd1`, `sd132`), and the product MAME-SD1 runs the 32-voice SD-1 (`sd132`). All four boot and play, and their panels match MAME's rendering exactly through the description. The warning their scripts hide (the item `plugin_warning`, set to state 0) is hidden. What their "keys and sliders" script does still has to be done natively: its calls name the items and ports, e.g. `SliderHandler:create(view, "slider_volume", "slider_knob_volume", "panel:analog_volume")` for a slider moving its knob item and setting an analog field (`IPT_PADDLE`), the wheels with spring-back, and `KeyboardHandler:create(view, "full_keyboard_background", "full_keyboard_key_", "panel:key_", 3, 5)` for keys pressing `panel:key_<n>`. The plugin's `emulator_info::layout_script_cb` receives the script text, so the calls can be read from it.
+

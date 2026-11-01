@@ -13,8 +13,8 @@ ROOT=$(cd "$(dirname "$0")" && pwd)
 JOBS=${JOBS:-$(nproc)}
 BUILD_TYPE=${BUILD_TYPE:-Release}
 BUILD="$ROOT/build"
-PRODUCTS="MAME-TX81Z MAME-EX20 MAME-LinnDrum"
-TARGETS="tx81zJucePlugin ex20JucePlugin linndrumJucePlugin"
+PRODUCTS="MAME-TX81Z MAME-EX20 MAME-LinnDrum MAME-SD1"
+TARGETS="tx81zJucePlugin ex20JucePlugin linndrumJucePlugin sd1JucePlugin"
 FORMATS=${FORMATS:-CLAP VST3}
 
 standalone=OFF
