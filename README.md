@@ -68,6 +68,7 @@ Everything a machine needs besides the plugin is in a folder of its own, `~/.loc
 | `nvram/<machine>/` | The machine's starting NVRAM (its patch memory), optional. Some machines start with empty patch memory and stay silent until patches are loaded. A new plugin instance starts from these files and afterwards keeps its own copy in the host project. |
 | `panels/` | CtrlrX panels (`.bpanelz`, `.panel`, ...), optional. The first one is opened when a plugin instance shows its panel for the first time. [docs/ctrlrx.md](docs/ctrlrx.md) lists panels for the machines. None are included. |
 | `cfg/` | Written by MAME, its settings for the machine. |
+| `default.lay` | A MAME layout file, optional. Shown instead of the layout compiled into the library, see [Layout development](#layout-development). |
 
 `~/.config/mame-plugin/mame-plugin.ini` can set further ROM folders, searched after the machine's own, and another data folder:
 
@@ -75,9 +76,22 @@ Everything a machine needs besides the plugin is in a folder of its own, `~/.loc
 # ;-separated, each holding <machine>.zip or <machine>/ like a MAME ROM folder
 rompath = /home/me/mame/roms
 datapath = /home/me/mame-plugin
+# reload the machine's layout file whenever it changes
+layoutdev = 1
 ```
 
-The environment variables `MAME_PLUGIN_ROMPATH` and `MAME_PLUGIN_DATAPATH` override both.
+The environment variables `MAME_PLUGIN_ROMPATH`, `MAME_PLUGIN_DATAPATH` and `MAME_PLUGIN_LAYOUTDEV` override them.
+
+## Layout development
+
+MAME compiles a machine's layout (`mame/src/mame/layout/<name>.lay`) into the library, so changing it normally means building MAME again and restarting the plugin. Instead, the plugins show the file `<machine>/default.lay` (or `<machine>/<machine>.lay`) of the data folder in place of the compiled layout, MAME's usual place for external artwork. With `layoutdev = 1`, they load it again within half a second of each change, while the machine keeps running. To work on the layout in the repository, link it there:
+
+```sh
+ln -s "$PWD/mame/src/mame/layout/tx81z.lay" ~/.local/share/mame-plugin/tx81z/default.lay
+MAME_PLUGIN_LAYOUTDEV=1 ./gearmulator/bin/plugins/Release/Standalone/MAME-TX81Z
+```
+
+A file that doesn't parse leaves the compiled layout on screen; MAME's error, with line and column, goes to the plugin's log (on the console for the stand-alone application). Reloading takes the emulation a moment, so the audio may drop out briefly. Only the panel is reloaded: if the new layout has another aspect ratio, close and open the editor. Layout scripts (Lua) don't run in the plugins; knobs and sliders work without them, see above. Remove the file again to get the compiled layout back.
 
 ## Licence
 
