@@ -82,7 +82,7 @@ layoutdev = 1
 nativelayout = 1
 ```
 
-The environment variables `MAME_PLUGIN_ROMPATH`, `MAME_PLUGIN_DATAPATH`, `MAME_PLUGIN_LAYOUTDEV` and `MAME_PLUGIN_NATIVELAYOUT` override them. With `nativelayout`, the panel is drawn from the layout's description, see [docs/layout-loader.md](docs/layout-loader.md); knobs and sliders can't be dragged there yet.
+The environment variables `MAME_PLUGIN_ROMPATH`, `MAME_PLUGIN_DATAPATH`, `MAME_PLUGIN_LAYOUTDEV` and `MAME_PLUGIN_NATIVELAYOUT` override them. With `nativelayout`, the panel is drawn from the layout's description, see [docs/layout-loader.md](docs/layout-loader.md).
 
 ## Layout development
 

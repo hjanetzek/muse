@@ -92,10 +92,15 @@ Milestone 2 is done: `nativelayout = 1` in `mame-plugin.ini` (or `MAME_PLUGIN_NA
 
 - `ElemLayout`, an RmlUi element over the skin's panel canvas, draws one textured quad per item. Element images are drawn by MAME at the item's size in pixels and cached per element, state, orientation and size; screens are textures of their own size, scaled by the GPU.
 - Blending: RmlUi's renderers (OpenGL 3 and 2, Metal, software) only blend with alpha. Where items add or multiply, the region is composited on the CPU exactly as MAME does, up to its last such item, and drawn as one texture in that place. On the TX81Z that's the LCD, composited again when its screen changes. Blend modes in the renderers can replace this later.
-- Clicks press the topmost clickable item under the pointer through `mp_layout_input` (API 8), each state held for at least 50 ms like other panel clicks.
+- The mouse goes to MAME in view coordinates (`mp_layout_pointer`, API 8), handled like the bitmap panel's clicks: MAME presses the clickable items (with `clickthrough`), and the knobs and sliders of `plugin_layout_controls` follow drags. `mp_layout_input` presses an item's input directly, for hosts that do their own hit testing.
 - TX81Z, EX-20 and LinnDrum look the same as with MAME's rendering. The EX-20, whose display changes all the time, costs 4.8% of a core for the GUI instead of 6.3%.
 
-Not yet: dragging knobs and sliders (the LinnDrum's show their values, but don't move), `clickthrough`, the views and collections to choose from, and scrolled items.
+Milestone 3 is done: the EX-20's and LinnDrum's panels work natively, with the LinnDrum's knobs and sliders dragged as on the bitmap panel; its counters and LED digits are elements MAME draws. Two things found on the way:
+
+- Without a bitmap panel the render target keeps the layout's natural size, and view coordinates are mapped through the target's visible area, as MAME maps its pixels back. That area can be a little smaller than the target; mapping across the whole target put clicks about 1% off, enough to miss a knob.
+- The library merged a queued pointer event with the next one when the buttons were the same, so a press followed by a move became a press at the end of the drag: a knob, which measures from where the drag began, didn't move. Only moves are merged now, which fixes quick drags on the bitmap panel too.
+
+Not yet: the views and collections to choose from, and scrolled items.
 
 ## Milestones
 
