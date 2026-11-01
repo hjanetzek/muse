@@ -2,6 +2,16 @@
 
 Hardware synthesizers emulated by [MAME](https://www.mamedev.org), played as CLAP and VST3 instrument plugins.
 
+![The Wersi EX-20 in MAME-EX20, its front panel drawn from MAME's layout](docs/images/ex20.png)
+
+## Goals
+
+muse is meant to make work on MAME's synthesizer drivers easier and more fun, and to let AI agents do much of the layout work:
+
+- **A driver in a DAW.** A machine is played from a sequencer, with MIDI, automation and saved projects, instead of from MAME's frontend. The library and the test harness (`mame/src/osd/plugin`, `mpctest`) run a machine headless, render its audio offline and deterministically, and draw its panel, for checks that compare runs.
+- **Layouts without compiling.** A layout file in the machine's data folder replaces the compiled one, and is reloaded within half a second of each change while the machine keeps running (see [Layout development](#layout-development)). The knobs and sliders that layouts leave to Lua scripts work without them.
+- **Automated layout work.** The plugins come with gearmulator's MCP server, through which an agent such as Claude Code drives a running plugin: screenshots of the panel, clicks and drags on its controls, MIDI and SysEx, parameters, and recordings of its audio. Together with the layout reload, an agent can edit a layout, look at the result, try its controls and listen to the machine, without anyone in between. Much of muse itself was developed and checked this way. The server is switched on per plugin with `<VALUE name="enableMcpServer" val="1"/>` in `~/.local/share/The Usual Suspects/<plugin>/config/<plugin>.xml`; running instances list themselves with their ports in `~/.gearmulator_mcp.json`.
+
 The plugins take MIDI from the host and return the machine's audio. The machine's front panel is shown the way MAME draws it from its layout, and it can be used with the mouse. The machine's NVRAM (its patch memory) is saved with the host project.
 
 Editor and librarian panels made for [CtrlrX](https://github.com/damiensellier/CtrlrX) run inside the plugins: "CtrlrX Panel..." in the plugin's menu (right click) opens the panel in a window of its own, the panel's MIDI goes to the machine and the machine's MIDI back to the panel. See [docs/ctrlrx.md](docs/ctrlrx.md).
