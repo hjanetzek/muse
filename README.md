@@ -14,8 +14,11 @@ The plugin side is built on [gearmulator](https://github.com/dsp56300/gearmulato
 |---|---|---|
 | MAME-TX81Z | Yamaha TX81Z FM Tone Generator | `tx81z` |
 | MAME-EX20 | Wersi EX-20 Digital Organ | `ex20` |
+| MAME-LinnDrum | Linn Electronics LinnDrum | `linndrum` |
 
-The MAME library also contains the FB-01, DX100, MU50, ESQ-1/ESQ-M/SQ-80, Poly-800 and LinnDrum drivers, which don't have a plugin yet. [docs/music-instruments.md](docs/music-instruments.md) lists all instruments in MAME by how complete their emulation is.
+The MAME library also contains the FB-01, DX100, MU50, ESQ-1/ESQ-M/SQ-80 and Poly-800 drivers, which don't have a plugin yet.
+
+The LinnDrum has no MIDI input. Its plugin maps General MIDI drum notes to its pads, and velocity picks the louder variations (snare 1-3, bass 1-2, hi-hat 1-2). The upper row of pads plays drums (hi-hats, toms, rides) or percussion (cabasa, tambourine, congas, cowbell, claps), as the PERC. button sets it; the notes of both go to the same pads. A pad sounds about 10 ms after its note, the time the LinnDrum's firmware takes to see the key. The note maps are in `gearmulator/source/mame/mameLib/noteMap.cpp`. [docs/music-instruments.md](docs/music-instruments.md) lists all instruments in MAME by how complete their emulation is.
 
 ## Repository layout
 
