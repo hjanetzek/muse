@@ -7,7 +7,6 @@
 
 ## Machines
 
-- **TX81Z tuning.** The starting NVRAM in the data folder has Master Tune at -64; A4 plays at 415 Hz.
 - **Layout knob and slider settings in the plugin state.** MAME keeps adjuster values (the LinnDrum's knobs and mixer) in the machine's `cfg/` folder, shared by all instances and not saved with the host project.
 
 ## CtrlrX
