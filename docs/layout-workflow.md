@@ -32,7 +32,7 @@ MAME_PLUGIN_LAYOUTDEV=1 ./gearmulator/bin/plugins/Release/Standalone/MAME-<Machi
 
 - Every save of the `.lay` file is shown within half a second, while the machine keeps running.
 - A file that doesn't parse leaves the compiled layout on screen; MAME's error, with line and column, is in the log: `grep -i "error" /tmp/<machine>.log`. Check the log after every save: a screenshot of the old layout looks like "nothing changed".
-- Only the panel is reloaded. If the view's aspect ratio changes, the editor window keeps its size until it is reopened (restart the application).
+- Only the panel is reloaded. The editor's size comes from the product's skin, not from the layout: `gearmulator/source/mame/<product>JucePlugin/skins/mameDefault/mameDefault.rcss` sets the `body` to the layout's natural size in `dp`. If the view's aspect changes, the panel is letterboxed in the old size until the skin is changed and the application rebuilt; restarting isn't enough. Crop the letterbox off screenshots meanwhile (the panel is centred at the window's width).
 - For a machine without a plugin product yet, use `mpctest` instead (section 5).
 
 Remove the link when done (`rm ~/.local/share/mame-plugin/<machine>/default.lay`); the next build compiles the edited file into the library.
@@ -56,6 +56,8 @@ mcp exit                            # quit the application
 - `tools/list` instead of `tools/call` lists all tools with their arguments.
 - Screenshots are of the editor at its current size; coordinates of the mouse tools are in the same pixels. The size changes with the window and the GUI scale (`get_gui_scale`, `set_gui_scale`), so read it before using coordinates.
 - Don't take screenshots of the desktop: `screenshot` captures only the plugin's editor.
+- `mcp set_gui_scale '{"scale":200}'` gives screenshots twice as sharp for zoomed comparisons; mouse coordinates scale with it.
+- `record_start`, `send_note` and `record_stop` capture the audio output with its peak and RMS, to check that a control does something. A level doesn't show a change of timbre (e.g. drawbars), so listen or compare spectra for those.
 - `MAME_PLUGIN_NATIVELAYOUT=1` has the plugin draw the layout itself instead of showing MAME's rendering. Both should look the same; compare with the bitmap panel (the default) while matching a photo, since that is MAME's reference rendering.
 
 ## 4. Compare with the image
@@ -70,6 +72,8 @@ magick "$ref" shot.png -append side.png                                         
 magick "$ref" shot.png -compose difference -composite -auto-level diff.png      # bright = different
 magick compare -metric RMSE "$ref" shot.png null: 2>&1                         # one number, lower is better
 ```
+
+To measure positions, a small script that crops a region, scales it up and draws a labelled coordinate grid every 5 or 10 pixels is worth writing first: positions and sizes can then be read off directly. Pillow and numpy aren't installed system-wide; `uv venv` in the scratchpad and `uv pip install pillow numpy` give them. A median colour over a small area of the image (`numpy.median`) picks clean colours from a photo.
 
 Look at `side.png` and `diff.png` with `Read`. Crop and zoom into one area at a time (`magick side.png -crop 300x120+X+Y -scale 300% zoom.png`): whole-panel images hide small offsets. A photo never matches pixel for pixel (lighting, perspective, printing); use the RMSE to see whether a change helped, and your eyes for whether it's right.
 
@@ -93,11 +97,26 @@ The layout file goes to `$HOME/art/<machine>/default.lay`. `MPCTEST_PANEL_SCALE=
 4. **Use groups and repeats** for rows of identical controls: one `<group>` with parameters for the label and input, placed with `<repeat>`. It keeps the file short and the spacing exact.
 5. **Bind as you go.** Give each button its `inputtag`/`inputmask` and each LED its `name`, then click it over MCP and check the machine reacts (the display changes, the LED lights). An unbound button looks right and does nothing.
 6. **Iterate one area at a time:** edit, save, check the log, screenshot, compare the zoomed area, repeat. Commit when an area matches.
-7. **Text:** layout `<text>` uses MAME's font; match size and position, not the typeface. Small print that MAME can't render legibly at the panel's size can be left out.
+7. **Text:** layout `<text>` uses MAME's font; match size and position, not the typeface. Small print that MAME can't render legibly at the panel's size can be left out. The text fills its bounds' height, and its capitals are about half of it: for a 9 pixel cap height, use a height of about 18. If the text is wider than its bounds it is squeezed horizontally, so a width set to the measured width of the printed text imitates a condensed panel font. MAME has no bold; drawing a text twice, half a pixel apart, looks bold when scaled up, but item bounds are rounded to whole pixels in the native view, so at 100 % some labels come out bold and others not. Don't.
+
+### Generating the layout
+
+A panel has a few hundred items. A script that writes the `.lay` (Python, with the measurements, colours and port mappings in one place) is easier to iterate than editing XML: each run rewrites the file, live reload shows it. Things that worked for the EX-20 (`wersiex20.lay`):
+
+- **Artwork as SVG:** rounded boxes, outlines, connector lines, bezels, logos and switches can be one `<image>` element whose `<data>` holds an SVG (`<![CDATA[<svg ...>...</svg>]]>`), with the image's coordinates as its `viewBox`. MAME draws it sharp at any size. Its SVG renderer (nanosvg) does paths, rects, circles, fills and strokes, but no text: labels stay layout `<text>` items over it. Stroking a path in white and then again thinner in the background colour gives inline (outlined) lettering for a logo.
+- **The view's bounds can be part of the image:** keep the image's pixels as coordinates and set the view to the panel itself (e.g. `x="5" y="4"`), leaving out the photo's border.
+- **Buttons with LEDs:** one item per button with both `name="<led output>"` and `inputtag`/`inputmask`; the element has a state 0 and 1 image (LED off and on). The state follows the LED, a click presses the input.
+- **Sliders:** an item with `<animate inputtag="<port>" inputmask="0xff"/>` and two `<bounds state="0" .../>`, `<bounds state="255" .../>` for the ends of its travel, on an analog port (`IPT_POSITIONAL`, `IPT_PADDLE`, adjusters), is dragged by the plugins without any script.
+- **Decoration for what the driver lacks:** controls of the hardware without an input (a reset button, unemulated faders) can be drawn without a binding, but say so in the commit.
+
+### Keep the iterations
+
+Copy each generated layout and its screenshot to a numbered pair (`NN_layout.xml`, `NN_shot.png`) in a folder the user can look at (e.g. `mocks/<machine>/wip/`, ignored by git), together with the generator, so the work can be followed and an earlier step compared or restored.
 
 ## 7. Checking the result
 
 - No errors in the log for the final file.
 - Every input of the driver's front panel is reachable by a click, every LED lights when it should.
 - `MPCTEST_LAYOUT=1` reports (almost) no differences, so the native view shows it the same way.
-- Build without the link (`./build.sh`) and start the application: the compiled layout is the one you edited.
+- Every control the layout binds is read by the driver. A port that exists isn't necessarily used: the EX-20's drawbar and volume ports were bound in the layout but the driver returned fixed values for them, left from its development. Check the driver's read handlers for commented-out reads and hard-coded values.
+- Remove the link and build (`FORMATS="Standalone" ./build.sh`; the default formats, CLAP and VST3, don't rebuild the stand-alone applications), then start the application: the compiled layout is the one you edited, the window has the skin's new size, and the native view (`MAME_PLUGIN_NATIVELAYOUT=1`) looks the same at 100 % scale.
