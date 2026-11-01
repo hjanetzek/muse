@@ -88,6 +88,15 @@ Things learned on the way, which the GUI side has to follow:
 
 Not in milestone 1 yet: input (`mp_layout_input`, `mp_layout_field`), the views and collections to choose from, and scrolled items (flagged `MP_LAYOUT_SCROLLED`, none in our machines).
 
+Milestone 2 is done: `nativelayout = 1` in `mame-plugin.ini` (or `MAME_PLUGIN_NATIVELAYOUT=1`) has the editor draw the panel itself (`mameJucePlugin/mameLayout.cpp`).
+
+- `ElemLayout`, an RmlUi element over the skin's panel canvas, draws one textured quad per item. Element images are drawn by MAME at the item's size in pixels and cached per element, state, orientation and size; screens are textures of their own size, scaled by the GPU.
+- Blending: RmlUi's renderers (OpenGL 3 and 2, Metal, software) only blend with alpha. Where items add or multiply, the region is composited on the CPU exactly as MAME does, up to its last such item, and drawn as one texture in that place. On the TX81Z that's the LCD, composited again when its screen changes. Blend modes in the renderers can replace this later.
+- Clicks press the topmost clickable item under the pointer through `mp_layout_input` (API 8), each state held for at least 50 ms like other panel clicks.
+- TX81Z, EX-20 and LinnDrum look the same as with MAME's rendering. The EX-20, whose display changes all the time, costs 4.8% of a core for the GUI instead of 6.3%.
+
+Not yet: dragging knobs and sliders (the LinnDrum's show their values, but don't move), `clickthrough`, the views and collections to choose from, and scrolled items.
+
 ## Milestones
 
 1. **API and check tool.** `mp_layout_describe`, `mp_layout_element_image`, `mp_layout_states` and `mp_layout_screen` in the library. mpctest composes a frame from them in plain C and compares it with MAME's own rendering. The difference should be small, which validates the description before any GUI work.

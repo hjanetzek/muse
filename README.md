@@ -78,9 +78,11 @@ rompath = /home/me/mame/roms
 datapath = /home/me/mame-plugin
 # reload the machine's layout file whenever it changes
 layoutdev = 1
+# draw the panel with the plugin's UI instead of showing MAME's rendering (experimental)
+nativelayout = 1
 ```
 
-The environment variables `MAME_PLUGIN_ROMPATH`, `MAME_PLUGIN_DATAPATH` and `MAME_PLUGIN_LAYOUTDEV` override them.
+The environment variables `MAME_PLUGIN_ROMPATH`, `MAME_PLUGIN_DATAPATH`, `MAME_PLUGIN_LAYOUTDEV` and `MAME_PLUGIN_NATIVELAYOUT` override them. With `nativelayout`, the panel is drawn from the layout's description, see [docs/layout-loader.md](docs/layout-loader.md); knobs and sliders can't be dragged there yet.
 
 ## Layout development
 
