@@ -93,7 +93,7 @@ ln -s "$PWD/mame/src/mame/layout/tx81z.lay" ~/.local/share/mame-plugin/tx81z/def
 MAME_PLUGIN_LAYOUTDEV=1 ./gearmulator/bin/plugins/Release/Standalone/MAME-TX81Z
 ```
 
-A file that doesn't parse leaves the compiled layout on screen; MAME's error, with line and column, goes to the plugin's log (on the console for the stand-alone application). Reloading takes the emulation a moment, so the audio may drop out briefly. Only the panel is reloaded: if the new layout has another aspect ratio, close and open the editor. Layout scripts (Lua) don't run in the plugins; knobs and sliders work without them, see above. Remove the file again to get the compiled layout back.
+A file that doesn't parse leaves the compiled layout on screen; MAME's error, with line and column, goes to the plugin's log (on the console for the stand-alone application). Reloading takes the emulation a moment, so the audio may drop out briefly. Only the panel is reloaded: if the new layout has another aspect ratio, close and open the editor. Layout scripts (Lua) don't run in the plugins; knobs and sliders work without them, see above. Remove the file again to get the compiled layout back. [docs/layout-workflow.md](docs/layout-workflow.md) describes how to match a layout to a photo of the hardware, comparing it with screenshots taken over the plugins' MCP server.
 
 ## Licence
 
