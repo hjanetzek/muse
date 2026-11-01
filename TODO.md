@@ -9,6 +9,10 @@
 
 - **Layout knob and slider settings in the plugin state.** MAME keeps adjuster values (the LinnDrum's knobs and mixer) in the machine's `cfg/` folder, shared by all instances and not saved with the host project.
 
+## UI
+
+- **Native MAME layouts in the gearmulator UI.** See the plan in [docs/layout-loader.md](docs/layout-loader.md).
+
 ## CtrlrX
 
 See "Open" under Status in [docs/ctrlrx.md](docs/ctrlrx.md#status).
