@@ -102,6 +102,13 @@ Milestone 3 is done: the EX-20's and LinnDrum's panels work natively, with the L
 
 Not yet: the views and collections to choose from, and scrolled items.
 
+Milestone 4 is done (API 9): the machine's adjusters are the plugin's parameters.
+
+- The library lists them (`mp_field_count`, `mp_field_info`: name, port, mask, range, default), sets them (`mp_set_field`) and reports their values with a serial (`mp_field_values`), which also changes when a knob is dragged on the panel.
+- Their values are entries of the NVRAM data the host saves (`ioport:<port>:<mask>`), applied after MAME has read its cfg files, so a project's values win over those MAME keeps per machine.
+- A product's `parameterDescriptions_mame.json` lists them as parameters named as MAME names them; `mpctest` writes it with `MPCTEST_FIELDS=<file>`. The LinnDrum has 44, the TX81Z and EX-20 none. The controller sends parameter changes to the field of the same name and reads the values back at 30 Hz.
+- Checked in the LinnDrum Standalone: a parameter change moves the panel's knob, a drag on the panel changes the parameter, and restoring a saved plugin state brings both back. MIDI learn works on any parameter of the framework and wasn't tried separately.
+
 ## Milestones
 
 1. **API and check tool.** `mp_layout_describe`, `mp_layout_element_image`, `mp_layout_states` and `mp_layout_screen` in the library. mpctest composes a frame from them in plain C and compares it with MAME's own rendering. The difference should be small, which validates the description before any GUI work.
