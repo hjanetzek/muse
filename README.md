@@ -85,9 +85,11 @@ datapath = /home/me/mame-plugin
 layoutdev = 1
 # draw the panel with the plugin's UI instead of showing MAME's rendering (experimental)
 nativelayout = 1
+# the UI scale in percent for all the plugins; without it each keeps the one chosen in its menu
+uiscale = 150
 ```
 
-The environment variables `MAME_PLUGIN_ROMPATH`, `MAME_PLUGIN_DATAPATH`, `MAME_PLUGIN_LAYOUTDEV` and `MAME_PLUGIN_NATIVELAYOUT` override them. With `nativelayout`, the panel is drawn from the layout's description, see [docs/layout-loader.md](docs/layout-loader.md).
+The environment variables `MAME_PLUGIN_ROMPATH`, `MAME_PLUGIN_DATAPATH`, `MAME_PLUGIN_LAYOUTDEV`, `MAME_PLUGIN_NATIVELAYOUT` and `MAME_PLUGIN_UISCALE` override them. Resizing a plugin window gives more or less room around the panel; its size, and that of its text, only follows the UI scale. With `nativelayout`, the panel is drawn from the layout's description, see [docs/layout-loader.md](docs/layout-loader.md).
 
 ## Layout development
 
